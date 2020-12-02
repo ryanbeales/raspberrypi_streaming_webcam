@@ -40,13 +40,17 @@ cd [repo name]
 ansible-playbook -i localhost [thisplaybook.yml]
 
 
-# Local testing
+## Local testing
 
-My testing environent is windows 10 pro with hyperv enabled, with chocolaty installed. I'll leave that as an exercise for the reader to install.
+I've included a VagrantFile for testing the scripts out locally before applying them to a Raspberry Pi. This will help pick up syntax/script issues, the actual webcam will fail due to not having the raspivid executable.
 
-To get the testing environment up from that point: In an administrator powershell install vagrant with `choco install vagrant` and then `vagrant up` in this directory.
+# Windows
 
-Vagrant will download the debian 10 image and run the ansible provisioner to test the playbook. Testing can also take place on an actual raspberry pi, but this is much faster.
+My testing environment is windows 10 pro with hyperv enabled, with chocolaty installed. I'll leave that as an exercise for the reader to install.
+
+To get the testing environment up from that point: In an administrator powershell install vagrant with `choco install vagrant` and then `vagrant up` in this directory. If it asks for a switch then select the default switch. It will ask for a username and password to mount a SMB share, this is your windows username and password.
+
+Vagrant will download the debian 10 image and run the ansible provisioner to test the playbook. Testing can also take place on an actual raspberry pi, but this can be cleaned up faster (I did say it was a faster development time but I've spent 3 hours making vagrant work correctly)
 
 If you make changes to the playbook you can retest with `vagrant provision`
 

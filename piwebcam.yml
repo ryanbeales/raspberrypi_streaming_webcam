@@ -4,25 +4,29 @@
   become: true
   vars:
     webcam:
-      - name: window
-      - path: "/webcam/"
-      - startup_script_path: "/usr/local/bin/"
+      name: window
+      path: "/webcam/"
+      startup_script_path: "/usr/local/bin/"
       encoding:
-        - bitrate: 2000000
-        - width: 1920
-        - height: 1080
-        - gop: 50
+        bitrate: 2000000
+        width: 1920
+        height: 1080
+        gop: 50
       stream:
         # Number of segments in the m3u8 file
-        - playlist_length: 30
+        playlist_length: 30
         # Length of each segment in seconds
-        - segment_length: 2
+        segment_length: 2
   
   tasks:
     # Install (or make sure) required tools are installed
-    - name: Install snapd nginx #libraspberrypi-bin -- need to uncomment when not in vagrant
+    - name: Install snapd and nginx
       apt:
-        name: snapd
+        name: 
+          - snapd
+          - nginx
+        state: present
+        update_cache: yes
     
     - name: Install ffmpeg snap
       community.general.snap:
@@ -75,3 +79,9 @@
         enabled: yes
         name: webcam
     
+    - name: Restart nginx
+      systemd:
+        state: restarted
+        daemon-reload: yes
+        enabled: yes
+        name: nginx

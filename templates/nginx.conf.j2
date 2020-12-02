@@ -15,7 +15,7 @@ http {
   server {
     listen 80;
 
-    root /{{ webcam.path }}/;
+    root {{ webcam.path }};
 
     location / {
       index index.html;
