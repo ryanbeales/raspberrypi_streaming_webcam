@@ -1,0 +1,17 @@
+[Unit]
+Description=webcam
+After=nginx.service
+After=systemd-user-sessions.service
+After=rc-local.service
+Before=getty.target
+
+
+[Service]
+ExecStart=/home/pi/webcam.sh
+Type=simple
+Restart=always
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target

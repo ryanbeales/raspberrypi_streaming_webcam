@@ -1,0 +1,2 @@
+[vagrant_webcam]
+default ansible_connection=local

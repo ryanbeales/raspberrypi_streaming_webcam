@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/raspivid -o - -t -0 -b {{ webcam.encoding.bitrate }} -w {{ webcam.encoding.width }} -h {{ webcam.encoding.height }} -g {{ webcam.encoding.gop }} -ih -a 1036 | /usr/local/bin/ffmpeg -i - -vcodec copy -map 0:0 -strict experimental -hls_time {{ webcam.stream.segment_length }} -hls_list_size {{ webcam.stream.playlist_length }} -hls_flags delete_segments -f hls /{{ webcam.path }}/{{ webcam.name }}.m3u8

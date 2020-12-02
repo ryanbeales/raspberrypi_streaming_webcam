@@ -1,0 +1,77 @@
+# Create a webcam on a raspberry pi
+- name: "Raspberry Pi Webcam"
+  hosts: default
+  become: true
+  vars:
+    webcam:
+      - name: window
+      - path: "/webcam/"
+      - startup_script_path: "/usr/local/bin/"
+      encoding:
+        - bitrate: 2000000
+        - width: 1920
+        - height: 1080
+        - gop: 50
+      stream:
+        # Number of segments in the m3u8 file
+        - playlist_length: 30
+        # Length of each segment in seconds
+        - segment_length: 2
+  
+  tasks:
+    # Install (or make sure) required tools are installed
+    - name: Install snapd nginx #libraspberrypi-bin -- need to uncomment when not in vagrant
+      apt:
+        name: snapd
+    
+    - name: Install ffmpeg snap
+      community.general.snap:
+        name: ffmpeg
+        state: present
+
+    - name: Create hls stream directory
+      file:
+        path: "{{ webcam.path }}"
+        state: directory
+        mode: "0755"
+    
+    - name: Create index.html
+      template:
+        src: index.html.j2
+        dest: "{{ webcam.path }}/index.html"
+        mode: "0644"
+    
+    - name: Change ownership of files
+      file:
+        path: "{{ webcam.path }}"
+        state: directory
+        recurse: yes
+        owner: nobody
+        group: nogroup
+    
+    - name: Create webcam startup script
+      template:
+        src: webcam.sh.j2
+        dest: "{{ webcam.startup_script_path }}/webcam.sh"
+        mode: "0755"
+
+    - name: Configure nginx
+      template:
+        src: nginx.conf.j2
+        dest: "/etc/nginx/nginx.conf"
+        mode: "0644"
+
+    # - name: Create nginx systemd service - maybe this is already there?
+    - name: Create webcam service
+      template:
+        src: webcam.service.j2
+        dest: "/etc/systemd/system/webcam.service"
+        mode: "0644"
+    
+    - name: Restart webcam service
+      systemd:
+        state: restarted
+        daemon-reload: yes
+        enabled: yes
+        name: webcam
+    
