@@ -28,6 +28,12 @@
         state: present
         update_cache: yes
     
+    - name: Install Raspivid
+      apt:
+        name: libraspberrypi-bin
+        state: present
+      when: vagrant_install is not defined
+    
     - name: Install ffmpeg snap
       community.general.snap:
         name: ffmpeg
@@ -58,12 +64,16 @@
         src: webcam.sh.j2
         dest: "{{ webcam.startup_script_path }}/webcam.sh"
         mode: "0755"
+      notify: 
+        - Restart webcam service
 
     - name: Configure nginx
       template:
         src: nginx.conf.j2
         dest: "/etc/nginx/nginx.conf"
         mode: "0644"
+      notify: 
+        - Restart nginx
 
     # - name: Create nginx systemd service - maybe this is already there?
     - name: Create webcam service
@@ -72,6 +82,7 @@
         dest: "/etc/systemd/system/webcam.service"
         mode: "0644"
     
+  handlers:
     - name: Restart webcam service
       systemd:
         state: restarted

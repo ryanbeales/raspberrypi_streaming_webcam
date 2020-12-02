@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     ansible.inventory_path = "/vagrant/inventory/vagrant_webcam_hosts"
     ansible.playbook = "/vagrant/piwebcam.yml"
     ansible.extra_vars = {
-      raspbivid_package_name: ""
+      vagrant_install: true
     }
   end
 

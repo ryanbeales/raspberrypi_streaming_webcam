@@ -7,7 +7,7 @@ Before=getty.target
 
 
 [Service]
-ExecStart=/home/pi/webcam.sh
+ExecStart={{ webcam.startup_script_path }}/webcam.sh
 Type=simple
 Restart=always
 User=pi
