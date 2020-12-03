@@ -19,8 +19,15 @@
         segment_length: 2
   
   tasks:
+    # Disable boot to GUI, and shut down GUI
+    - name: Disable boot to GUI
+      command: {{ item }}
+      with_items:
+        - systemctl set-default multi-user.target
+        - systemctl default
+
     # Install (or make sure) required tools are installed
-    - name: Install nginx and build tools
+    - name: Install nginx and ffmpeg
       apt:
         name: 
           - nginx
