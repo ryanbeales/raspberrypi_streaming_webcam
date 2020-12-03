@@ -1,6 +1,6 @@
 # Create a webcam on a raspberry pi
 - name: "Raspberry Pi Webcam"
-  hosts: all
+  hosts: localhost
   become: true
   vars:
     webcam:
@@ -20,7 +20,7 @@
   
   tasks:
     # Install (or make sure) required tools are installed
-    - name: Install snapd and nginx
+    - name: Install nginx and build tools
       apt:
         name: 
           - nginx
@@ -41,12 +41,19 @@
       
     - name: Git clone ffmpeg
       command: git clone git://source.ffmpeg.org/ffmpeg.git /home/pi/ffmpeg/
+      args:
+        creates: /home/pi/ffmpeg/configure
 
-    - name: Configure ffmpeg
-      command: /home/pi/configure --enable-gpl --enable-nonfree --enable-libx264
-
+    # There is a snapd version of ffmpeg for raspberry pi, but not for the pi zero which I am using.
+    # So we build it here
     - name: Build ffmpeg
-      command: cd /home/pi/ && make && make install
+      command: chdir=/home/pi/ffmpeg {{ item }}
+      with_items:  
+        - ./configure --enable-gpl --enable-nonfree --enable-libx264
+        - /usr/bin/make
+        - /usr/bin/make install
+      args:
+        creates: /usr/local/bin/ffmpeg
 
     - name: Create hls stream directory
       file:
