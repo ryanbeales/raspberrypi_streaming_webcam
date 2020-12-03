@@ -23,8 +23,9 @@
     - name: Install snapd and nginx
       apt:
         name: 
-          - snapd
           - nginx
+          - build-essential
+          - libx264-dev
         state: present
         update_cache: yes
     
@@ -38,10 +39,14 @@
       command: raspi-config nonint do_camera 0
       when: vagrant_install is not defined
       
-    - name: Install ffmpeg snap
-      community.general.snap:
-        name: ffmpeg
-        state: present
+    - name: Git clone ffmpeg
+      command: git clone git://source.ffmpeg.org/ffmpeg.git /home/pi/ffmpeg/
+
+    - name: Configure ffmpeg
+      command: /home/pi/configure --enable-gpl --enable-nonfree --enable-libx264
+
+    - name: Build ffmpeg
+      command: cd /home/pi/ && make && make install
 
     - name: Create hls stream directory
       file:
