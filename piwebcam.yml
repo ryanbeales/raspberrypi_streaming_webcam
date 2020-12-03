@@ -1,6 +1,6 @@
 # Create a webcam on a raspberry pi
 - name: "Raspberry Pi Webcam"
-  hosts: default
+  hosts: all
   become: true
   vars:
     webcam:

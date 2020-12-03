@@ -31,10 +31,9 @@ This assumes you know nothing, have a bunch of hardware around and just want to 
 
 1. Connect to your pi via ssh with the [default password](https://www.raspberrypi.org/documentation/linux/usage/users.md), check your router to see which IP address it's given itself (raspberrypi.local might work in a pinch)
 
-1. Install ansible and other tools locally, this will take a very long time, _many_ minutes. Enough time for me to write this entire readme.
+1. Install ansible and other tools locally, this will take a very long time, _many_ minutes, around 30. Enough time for me to write this entire readme.
     ```
     sudo python -m pip install ansible --no-cache-dir
-    sudo apt install git
     ```
 
 1. Clone this repo
@@ -42,10 +41,10 @@ This assumes you know nothing, have a bunch of hardware around and just want to 
     git clone https://github.com/ryanbeales/raspberrypi_streaming_webcam.git
     ```
 
-1. Start the build
+1. Start the build, this will again take some time. Get a coffee, or a full meal.
     ```
     cd raspberrypi_streaming_webcam
-    ansible-playbook -i localhost [thisplaybook.yml]
+    ansible-playbook -i localhost piwebcam.yml
     ```
 
 1. Reboot the pi with `reboot` or power cycle to enable the camera.
