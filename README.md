@@ -1,57 +1,69 @@
-Steps to install:
-1. Create pi zero SD card image
-2. Put wifi network details in config.txt and enable ssh. enable camera?
-3. Boot pi
-4. Wait for pi to appear on network
-5. Install ffmpeg (Compile it?) - Can we compile locally for PI? https://snapcraft.io/install/ffmpeg/raspbian ?
-6. Install NGINX, update config file. https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
-7. Install raspivid - package is libraspberrypi-bin
-8. Install systemd services
-9. Reload systemd
-10. Copy webcam.sh file
-11. Create /webcam, set owner to pi:pi
-12. Copy index.html to /webcam
-13. Start services.
+# What is this?
+This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam.
 
+This has been tested on the latest version of ansible and raspberry pi OS as of December 2020.
+
+If you know what you're doing, pick and choose from below. Otherwise this will take you through setting up ansible on your pi and running the install script for the webcam. This is based on my blog posts [here](https://blog.ryanbeales.com/2019/03/smooth-streaming-video-from-raspberry.html) with some improvements in how things run (no more RTSP, no more compiling FFMpeg, just wait for ansible to install)
+
+# Installing
+
+This assumes you know nothing, have a bunch of hardware around and just want to make a streaming webcam. If you have ansible already installed, I assume you can pick and choose from the below steps to get the playbook running.
+
+1. Follow the first two steps, then the first 4 from 'Connect the Camera Module' [here](https://projects.raspberrypi.org/en/projects/getting-started-with-picamera)
 
 1. Prepare your SD card
+    1. Install 'Raspberry Pi OS' on to an SD card, you can get the installer [here](https://www.raspberrypi.org/software/)
+    1. Use notepad/notepad++/atom/vscode/whatever to place a file named 'ssh' on the SD card (it can be empty)
+    1. Use notepad/notepad++/atom/vscode/whatever to place a file named `wpa_supplicant.conf` on the SD card with this contents (update to your values), more documentation is [here](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md):
+        ```
+        country=<2 letter country code>
+        update_config=1
+        ctrl_interface=/var/run/wpa_supplicant
 
+        network={
+            scan_ssid=1
+            ssid="Network name goes here"
+            psk="password goes here"
+        }
+        ```
 
-2. Connect to your pi
+1. Wait for the pi to boot (my pi zero took roughly ~2 minutes to appear on the network, and ~5 minutes to have SSH running)
 
-3. Install ansible and other tools locally
-```
-apt install ansible git snapd
-```
+1. Connect to your pi via ssh with the [default password](https://www.raspberrypi.org/documentation/linux/usage/users.md), check your router to see which IP address it's given itself (raspberrypi.local might work in a pinch)
 
-4. Clone this repo
-```
-git clone [this repo]
-```
+1. Install ansible and other tools locally, this will take a very long time, _many_ minutes. Enough time for me to write this entire readme.
+    ```
+    sudo python -m pip install ansible --no-cache-dir
+    sudo apt install git
+    ```
 
-5. Reboot the pi
-This is needed for snapd?
-https://snapcraft.io/install/ffmpeg/raspbian
+1. Clone this repo
+    ```
+    git clone [this repo]
+    ```
 
+1. Start the build
+    ```
+    cd [repo name]
+    ansible-playbook -i localhost [thisplaybook.yml]
+    ```
 
-6. Start the build
-```
-cd [repo name]
-ansible-playbook -i localhost [thisplaybook.yml]
+1. Reboot the pi with `reboot` or power cycle to enable the camera.
 
+1. After the pi is back you'll be able to view your webcam stream at http://[raspberry pi ip address here]/ or http://raspberrypi.local
 
-## Local testing
+# Local testing
 
-I've included a VagrantFile for testing the scripts out locally before applying them to a Raspberry Pi. This will help pick up syntax/script issues, the actual webcam will fail due to not having the raspivid executable.
+I've included a VagrantFile for testing the scripts out locally before applying them to a Raspberry Pi. This will help pick up syntax/script issues, the actual webcam will fail due to not having the raspivid executable. I only include some information about testing on Windows for now since that is all I have (I play games on this laptop too).
 
-# Windows
+## Windows
 
-My testing environment is windows 10 pro with hyperv enabled, with chocolaty installed. I'll leave that as an exercise for the reader to install.
+My testing environment is windows 10 pro with hyperv enabled and chocolaty installed. I'll leave that as an exercise for the reader to get to that point.
 
-To get the testing environment up from that point: In an administrator powershell install vagrant with `choco install vagrant` and then `vagrant up` in this directory. If it asks for a switch then select the default switch. It will ask for a username and password to mount a SMB share, this is your windows username and password.
+To get the testing environment up: In an administrator powershell install vagrant with `choco install vagrant` and then `vagrant up` in this directory. If it asks for a switch then select the default switch. It will ask for a username and password to mount a SMB share, this is your windows username and password, this is _important_, I thought it was a key error from vagrant at first because I didn't read it properly. If you're reading this you are better at reading than I am.
 
-Vagrant will download the debian 10 image and run the ansible provisioner to test the playbook. Testing can also take place on an actual raspberry pi, but this can be cleaned up faster (I did say it was a faster development time but I've spent 3 hours making vagrant work correctly)
+Vagrant will download the debian 10 image and run the ansible provisioner to test the playbook. Testing can also take place on an actual raspberry pi, but this can be cleaned up faster (at first I did say it was a faster cycle time to develop with vagrant but I've spent 3 hours making vagrant work correctly).
 
-If you make changes to the playbook you can retest with `vagrant provision`
+If you make changes to the playbook you can retest with `vagrant provision`.
 
 You can connect to the vm with `vagrant ssh` and explore what ansible created. When you're finished `vagrant destroy`.

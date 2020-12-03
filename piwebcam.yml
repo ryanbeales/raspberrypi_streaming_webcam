@@ -33,7 +33,11 @@
         name: libraspberrypi-bin
         state: present
       when: vagrant_install is not defined
-    
+
+    - name: Enable pi Camera
+      command: raspi-config nonint do_camera 0
+      when: vagrant_install is not defined
+      
     - name: Install ffmpeg snap
       community.general.snap:
         name: ffmpeg
