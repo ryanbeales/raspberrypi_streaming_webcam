@@ -21,7 +21,7 @@
   tasks:
     # Disable boot to GUI, and shut down GUI
     - name: Disable boot to GUI
-      command: {{ item }}
+      command: "{{ item }}"
       with_items:
         - systemctl set-default multi-user.target
         - systemctl default
