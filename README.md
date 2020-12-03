@@ -1,7 +1,8 @@
 # What is this?
 This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam. You should end up with a raspberry pi running nginx that you can connect to and get something like this:
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest">
+</script>
   <video autoplay="" controls="" height="50%" id="video" width="50%"></video>
   <script>
     if (Hls.isSupported()) {
