@@ -1,25 +1,5 @@
 # What is this?
-This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam. You should end up with a raspberry pi running nginx that you can connect to and get something like this:
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest">
-</script>
-  <video autoplay="" controls="" height="50%" id="video" width="50%"></video>
-  <script>
-    if (Hls.isSupported()) {
-      var video = document.getElementById('video');
-      var hls = new Hls();
-      // bind them together
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        console.log("video and hls.js are now bound together !");
-        hls.loadSource("https://s3.eu-west-2.amazonaws.com/www.ryanbeales.com/stream/window.m3u8");
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          console.log("manifest loaded, found " + data.levels.length + " quality level");
-        });
-        //video.play();
-      });
-    }
-</script>
+This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam.
 
 This has been tested on the latest version of ansible, raspberry pi zero, and raspberry pi OS as of December 2020.
 
