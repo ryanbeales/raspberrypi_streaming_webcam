@@ -1,9 +1,28 @@
 # What is this?
-This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam.
+This is an ansible script (with a vagrant test) for installing a quick raspberry pi live streaming webcam. You should end up with a raspberry pi running nginx that you can connect to and get something like this:
 
-This has been tested on the latest version of ansible and raspberry pi OS as of December 2020.
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <video autoplay="" controls="" height="50%" id="video" width="50%"></video>
+  <script>
+    if (Hls.isSupported()) {
+      var video = document.getElementById('video');
+      var hls = new Hls();
+      // bind them together
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        console.log("video and hls.js are now bound together !");
+        hls.loadSource("https://s3.eu-west-2.amazonaws.com/www.ryanbeales.com/stream/window.m3u8");
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          console.log("manifest loaded, found " + data.levels.length + " quality level");
+        });
+        //video.play();
+      });
+    }
+</script>
 
-If you know what you're doing, pick and choose from below. Otherwise this will take you through setting up ansible on your pi and running the install script for the webcam. This is based on my blog posts [here](https://blog.ryanbeales.com/2019/03/smooth-streaming-video-from-raspberry.html) with some improvements in how things run (no more RTSP, no more compiling FFMpeg, just wait for ansible to install)
+This has been tested on the latest version of ansible, raspberry pi zero, and raspberry pi OS as of December 2020.
+
+If you know what you're doing, pick and choose from below. Otherwise this will take you through setting up ansible on your pi and running the install script for the webcam. This is based on my blog posts [here](https://blog.ryanbeales.com/2019/03/smooth-streaming-video-from-raspberry.html) with some improvements in how things run (no more RTSP and compiling nginx, but still compiling ffmpeg, just wait for ansible to install)
 
 # Installing
 

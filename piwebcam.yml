@@ -1,6 +1,6 @@
 # Create a webcam on a raspberry pi
 - name: "Raspberry Pi Webcam"
-  hosts: localhost
+  hosts: all
   become: true
   vars:
     webcam:
@@ -53,7 +53,7 @@
         - /usr/bin/make
         - /usr/bin/make install
       args:
-        creates: /usr/local/bin/ffmpeg
+        creates: /usr/bin/ffmpeg
 
     - name: Create hls stream directory
       file:
@@ -91,7 +91,6 @@
       notify: 
         - Restart nginx
 
-    # - name: Create nginx systemd service - maybe this is already there?
     - name: Create webcam service
       template:
         src: webcam.service.j2
