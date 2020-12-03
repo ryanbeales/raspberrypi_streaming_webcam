@@ -24,8 +24,7 @@
       apt:
         name: 
           - nginx
-          - build-essential
-          - libx264-dev
+          - ffmpeg
         state: present
         update_cache: yes
     
@@ -38,22 +37,6 @@
     - name: Enable pi Camera
       command: raspi-config nonint do_camera 0
       when: vagrant_install is not defined
-      
-    - name: Git clone ffmpeg
-      command: git clone git://source.ffmpeg.org/ffmpeg.git /home/pi/ffmpeg/
-      args:
-        creates: /home/pi/ffmpeg/configure
-
-    # There is a snapd version of ffmpeg for raspberry pi, but not for the pi zero which I am using.
-    # So we build it here
-    - name: Build ffmpeg
-      command: chdir=/home/pi/ffmpeg {{ item }}
-      with_items:  
-        - ./configure --enable-gpl --enable-nonfree --enable-libx264
-        - /usr/bin/make
-        - /usr/bin/make install
-      args:
-        creates: /usr/bin/ffmpeg
 
     - name: Create hls stream directory
       file:
