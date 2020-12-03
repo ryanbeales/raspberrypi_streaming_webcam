@@ -34,9 +34,13 @@
         state: present
       when: vagrant_install is not defined
 
+    - name: Check if camera is enabled
+      command: raspi-config nonint get_camera
+      register: raspi_config_out
+
     - name: Enable pi Camera
       command: raspi-config nonint do_camera 0
-      when: vagrant_install is not defined
+      when: (vagrant_install is not defined) and (raspi_config_out.stdout == "1")
 
     - name: Create hls stream directory
       file:

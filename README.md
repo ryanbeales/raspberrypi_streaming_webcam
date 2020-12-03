@@ -44,7 +44,7 @@ This assumes you know nothing, have a bunch of hardware around and just want to 
 1. Start the build, this will again take some time. Get a coffee, or a full meal.
     ```
     cd raspberrypi_streaming_webcam
-    ansible-playbook piwebcam.yml
+    ansible-playbook -c local -i localhost, piwebcam.yml
     ```
 
 1. Reboot the pi with `reboot` or power cycle to enable the camera.
