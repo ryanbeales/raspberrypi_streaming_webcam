@@ -39,12 +39,12 @@ This assumes you know nothing, have a bunch of hardware around and just want to 
 
 1. Clone this repo
     ```
-    git clone [this repo]
+    git clone https://github.com/ryanbeales/raspberrypi_streaming_webcam.git
     ```
 
 1. Start the build
     ```
-    cd [repo name]
+    cd raspberrypi_streaming_webcam
     ansible-playbook -i localhost [thisplaybook.yml]
     ```
 
