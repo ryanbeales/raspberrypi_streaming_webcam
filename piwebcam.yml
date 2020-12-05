@@ -66,8 +66,8 @@
         path: "{{ webcam.path }}"
         state: directory
         recurse: yes
-        owner: nobody
-        group: nogroup
+        owner: pi
+        group: pi
     
     - name: Create webcam startup script
       template:
