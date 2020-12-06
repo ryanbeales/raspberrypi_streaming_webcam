@@ -19,12 +19,18 @@
         segment_length: 2
   
   tasks:
+    # Check if GUI booting is enabled
+    - name: Check if boot to GUI is enabled
+      command: systemctl get-default
+      register: gui_check_out
+
     # Disable boot to GUI, and shut down GUI
     - name: Disable boot to GUI
       command: "{{ item }}"
       with_items:
         - systemctl set-default multi-user.target
         - systemctl default
+      when: 'graphical.target' in gui_check_out.stdout
 
     # Install (or make sure) required tools are installed
     - name: Install nginx and ffmpeg
@@ -32,13 +38,13 @@
         name: 
           - nginx
           - ffmpeg
-        state: present
+        state: latest
         update_cache: yes
     
     - name: Install Raspivid
       apt:
         name: libraspberrypi-bin
-        state: present
+        state: latest
       when: vagrant_install is not defined
 
     - name: Check if camera is enabled
