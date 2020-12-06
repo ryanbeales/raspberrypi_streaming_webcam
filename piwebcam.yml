@@ -3,6 +3,7 @@
   hosts: all
   become: true
   vars:
+    disable_gui_boot: true
     webcam:
       name: window
       path: "/webcam/"
@@ -23,6 +24,7 @@
     - name: Check if boot to GUI is enabled
       command: systemctl get-default
       register: gui_check_out
+      when: disable_gui_boot
 
     # Disable boot to GUI, and shut down GUI
     - name: Disable boot to GUI
@@ -30,7 +32,7 @@
       with_items:
         - systemctl set-default multi-user.target
         - systemctl default
-      when: 'graphical.target' in gui_check_out.stdout
+      when: ('graphical.target' in gui_check_out.stdout) and disable_gui_boot
 
     # Install (or make sure) required tools are installed
     - name: Install nginx and ffmpeg
