@@ -1,2 +1,26 @@
 #!/bin/bash
-/usr/bin/raspivid -o - -t -0 -b {{ webcam.encoding.bitrate }} -w {{ webcam.encoding.width }} -h {{ webcam.encoding.height }} -g {{ webcam.encoding.gop }} -ih -a 1036 | /usr/bin/ffmpeg -i - -vcodec copy -map 0:0 -strict experimental -hls_time {{ webcam.stream.segment_length }} -hls_list_size {{ webcam.stream.playlist_length }} -hls_flags delete_segments -f hls /{{ webcam.path }}/{{ webcam.name }}.m3u8
+# Values used here:
+# raspivid: https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
+#   "-o -" output to stdout
+#   "-t -0" record for 'forever' seconds
+#   "-b [bitrate]" bitrate.
+#   "-w [width]" width of image
+#   "-h [height]" height of image
+#   "-g [gop]" interval between I-frames
+#   "-ih" insert PPS/SPS headers for HLS stream
+#   "-a 1036" bitwise annotate image, 1024 (black background) + 12 (date + time)
+#   "-ex auto" auto exposure
+#   "-drc high" dynamic range compensation set to high to help bring up low light areas
+
+# ffmpeg:
+#  "-i -" take input from stdin
+#  "-vcodec copy" copy, don't rencode, raspivid is doing hardware encoding for us
+#  "-map 0:0" map input stream 0 to output stream 0
+#  "-strict experimental" allow non-standard extensions, however this should no longer be required
+#  "-hls_time [number]" stream segment length
+#  "-hls_list_size [number]" number of segments per playlist
+#  "-hls_flags delete_segments" delete segments older than list size
+#  "-f hls [filename].m3u8" save output in hls format, with this filename
+
+# Run the video capture and hls formatting:
+/usr/bin/raspivid -o - -t -0 -b {{ webcam.encoding.bitrate }} -w {{ webcam.encoding.width }} -h {{ webcam.encoding.height }} -g {{ webcam.encoding.gop }} -ih -a 1036 -ex auto -drc high  | /usr/bin/ffmpeg -i - -vcodec copy -map 0:0 -strict experimental -hls_time {{ webcam.stream.segment_length }} -hls_list_size {{ webcam.stream.playlist_length }} -hls_flags delete_segments -f hls /{{ webcam.path }}/{{ webcam.name }}.m3u8

@@ -10,8 +10,14 @@
       startup_script_path: "/usr/local/bin/"
       encoding:
         bitrate: 2000000
+        # Refer to the table on this page to select the right resolution for the
+        # FoV you want:
+        # https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
+        # For example, i'm using the HQ camera at 1024x760 to get the widest view
+        # possible
         width: 1920
         height: 1080
+        # Interval between I-Frames (https://www.webopedia.com/definitions/i-frame/)
         gop: 50
       stream:
         # Number of segments in the m3u8 file
